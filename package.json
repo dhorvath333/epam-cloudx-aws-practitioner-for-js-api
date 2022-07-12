@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "npx serverless deploy"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api/issues"
   },
-  "homepage": "https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api#readme"
+  "homepage": "https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api#readme",
+  "dependencies": {
+    "serverless": "^3.20.0"
+  }
 }
