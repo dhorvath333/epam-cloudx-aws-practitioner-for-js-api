@@ -1,0 +1,20 @@
+{
+  "name": "epam-cloudx-aws-practitioner-for-js-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api/issues"
+  },
+  "homepage": "https://github.com/dhorvath333/epam-cloudx-aws-practitioner-for-js-api#readme"
+}
