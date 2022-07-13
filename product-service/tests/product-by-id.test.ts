@@ -7,17 +7,17 @@ describe('getProductById', () => {
         (productStore as any).PRODUCTS = [
             {
                 id: '1',
-                name: 'Mock product 1',
+                title: 'Mock product 1',
                 price: 10.99
             },
             {
                 id: '2',
-                name: 'Mock product 2',
+                title: 'Mock product 2',
                 price: 12.99
             },
             {
                 id: '3',
-                name: 'Mock product 3',
+                title: 'Mock product 3',
                 price: 9.99
             }
         ];
