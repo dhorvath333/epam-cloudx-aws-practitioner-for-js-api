@@ -1,11 +1,10 @@
 import type { AWS } from '@serverless/typescript';
 
-import getProductsList from '@functions/product-list';
-import getProductById from '@functions/product-by-id';
-import createProduct from '@functions/create-product';
+import importProductsFile from '@functions/import-products-file';
+import importFileParser from '@functions/import-file-parser';
 
 const serverlessConfiguration: AWS = {
-  service: 'product-service',
+  service: 'import-service',
   frameworkVersion: '3',
   plugins: ['serverless-esbuild'],
   provider: {
@@ -21,23 +20,31 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: "s3:ListBucket",
+        Resource: "arn:aws:s3:::shop-angular-cloudfront-images"
+      },
+      {
+        Effect: 'Allow',
+        Action: "s3:*",
+        Resource: "arn:aws:s3:::shop-angular-cloudfront-images/*"
+      }
+    ]
   },
   // import the function via paths
   functions: { 
-    getProductsList,
-    getProductById,
-    createProduct
-   },
+    importProductsFile,
+    importFileParser
+  },
   package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: [
-        'aws-sdk',
-        'pg-native'
-      ],
+      exclude: ['aws-sdk'],
       target: 'node14',
       define: { 'require.resolve': undefined },
       platform: 'node',
