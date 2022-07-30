@@ -5,12 +5,11 @@ import { getDataBase } from '@src/database';
 export const getProductsList = async (): Promise<APIGatewayProxyResult> => {
   console.log('GET /products');
 
+  const db = getDataBase();
+  
   try {
-    const db = getDataBase();
-
     const query = await db.query('SELECT p.*, count FROM product p LEFT JOIN stock on product_id = p.id');
     const products = query?.rows;
-    await db.end();
 
     return {
       statusCode: 200,
@@ -29,6 +28,8 @@ export const getProductsList = async (): Promise<APIGatewayProxyResult> => {
         error
       })
     }
+  } finally {
+    await db.end();
   }
 };
 

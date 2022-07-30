@@ -1,4 +1,5 @@
 import { handlerPath } from '@libs/handler-resolver';
+import { createProductSchema } from './schema';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
@@ -6,7 +7,13 @@ export default {
     {
       http: {
         method: 'post',
-        path: 'products'
+        path: 'products',
+        request: {
+          schemas: {
+            'application/json': createProductSchema,
+          },
+        },
+        cors: true
       },
     },
   ],
