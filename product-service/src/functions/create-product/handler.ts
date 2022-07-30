@@ -78,9 +78,9 @@ function validateDescription(description: string): boolean {
 }
 
 function validatePrice(price: number): boolean {
-  return !!price && price > 0;
+  return !!price && Number.isInteger(price) && price > 0;
 }
 
 function validateCount(count: number): boolean {
-  return !!count && count >=0;
+  return !!count && Number.isInteger(count) && count >=0;
 }
