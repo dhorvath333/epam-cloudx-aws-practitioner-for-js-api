@@ -2,6 +2,7 @@ import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/import-products-file';
 import importFileParser from '@functions/import-file-parser';
+import catalogBatchProcess from '@functions/catalog-batch-process';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -36,7 +37,8 @@ const serverlessConfiguration: AWS = {
   // import the function via paths
   functions: { 
     importProductsFile,
-    importFileParser
+    importFileParser,
+    catalogBatchProcess
   },
   package: { individually: true },
   custom: {
