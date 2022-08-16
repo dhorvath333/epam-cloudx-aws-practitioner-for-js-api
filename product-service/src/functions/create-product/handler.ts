@@ -3,18 +3,17 @@ import { getDataBase } from '@src/database';
 import { Product } from '@src/models/product';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { createProductSchema } from './schema';
+import { isProductValid } from '@libs/product';
 
 export const createProduct: ValidatedEventAPIGatewayProxyEvent<typeof createProductSchema> = async (event) => {
-  const { title, description, price, count } = (event.body as any) as Product;
+  const product = (event.body as any) as Product;
+  const { title, description, price, count } = product;
 
   console.log('POST /products ', { title, description, price, count }, event);
 
-  const isTitleValid = validateTitle(title);
-  const isDescriptionValid = validateDescription(description);
-  const isPriceValid = validatePrice(price);
-  const isCountValid = validateCount(count);
+  const isValid = isProductValid(product);
 
-  if (!isTitleValid || !isDescriptionValid || !isPriceValid || !isCountValid) {
+  if (!isValid) {
     return {
       statusCode: 400,
       headers: {
@@ -67,20 +66,3 @@ export const createProduct: ValidatedEventAPIGatewayProxyEvent<typeof createProd
 };
 
 export const main = middyfy(createProduct);
-
-
-function validateTitle(title: string): boolean {
-  return !!title;
-}
-
-function validateDescription(description: string): boolean {
-  return !!description;
-}
-
-function validatePrice(price: number): boolean {
-  return !!price && Number.isInteger(price) && price > 0;
-}
-
-function validateCount(count: number): boolean {
-  return !!count && Number.isInteger(count) && count >=0;
-}
