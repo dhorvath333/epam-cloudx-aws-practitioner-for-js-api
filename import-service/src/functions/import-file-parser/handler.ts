@@ -1,10 +1,11 @@
 import { middyfy } from '@libs/lambda';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { S3 } from 'aws-sdk';
+import { S3, SQS } from 'aws-sdk';
 import csv from 'csv-parser';
 import internal from 'stream';
-import { BUCKET, REGION } from '../../../config';
 import { CORS_HEADERS } from '../../../cors-headers';
+
+const { BUCKET, REGION, SQS_URL } = process.env;
 
 const importFileParser = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
   try {
@@ -61,6 +62,8 @@ function parseCSV(stream: internal.Readable): Promise<any> {
     stream
       .pipe(csv())
       .on('data', data => {
+        console.log('CSV data: ', data);
+        sendToSQS(data);
         result.push(data);
       })
       .on('error', error => reject(error))
@@ -82,5 +85,23 @@ async function copyCSVToParsedFolder(s3: S3, fileKey: string): Promise<void> {
 
   console.log(`${fileKey} copied to parsed folder`);
 }
+
+ function sendToSQS(data) {
+  const sqs = new SQS({
+    region: REGION
+  });
+
+  sqs.sendMessage({
+    QueueUrl: SQS_URL,
+    MessageBody: JSON.stringify(data)
+  }, (error, sqsData) => {
+    if (error) {
+      console.log('Error while sending data to SQS: ', error);
+      return;
+    }
+    console.log('Data sent to SQS: ', sqsData);
+    
+  });
+};
 
 export const main = middyfy(importFileParser);

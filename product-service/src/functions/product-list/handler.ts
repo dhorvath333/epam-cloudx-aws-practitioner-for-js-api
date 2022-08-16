@@ -23,6 +23,11 @@ export const getProductsList = async (): Promise<APIGatewayProxyResult> => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,GET"
+      },
       body: JSON.stringify({
         message: 'Something went wrong while getting product list!',
         error
