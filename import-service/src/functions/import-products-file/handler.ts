@@ -1,8 +1,9 @@
 import { middyfy } from '@libs/lambda';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { S3 } from 'aws-sdk';
-import { BUCKET, REGION } from '../../../config';
 import { CORS_HEADERS } from '../../../cors-headers';
+
+const { BUCKET, REGION } = process.env;
 
 export const importProductsFile = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
   const { name } = event.queryStringParameters;
