@@ -6,7 +6,11 @@ import importFileParser from '@functions/import-file-parser';
 const serverlessConfiguration: AWS = {
   service: 'import-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: [
+    'serverless-esbuild',
+    'serverless-dotenv-plugin'
+  ],
+  useDotenv: true,
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -19,6 +23,19 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      REGION: 'eu-central-1',
+      SQS_URL: {
+        'Fn::Join': [
+          '',
+          [
+            'https://sqs.', 
+            { Ref: 'AWS::Region' },
+            '.amazonaws.com/',
+            { Ref: 'AWS::AccountId' },
+            '/catalog-items-queue'
+          ],
+        ],
+      },
     },
     iamRoleStatements: [
       {
@@ -30,6 +47,21 @@ const serverlessConfiguration: AWS = {
         Effect: 'Allow',
         Action: "s3:*",
         Resource: "arn:aws:s3:::shop-angular-cloudfront-images/*"
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:SendMessage',
+        Resource: {
+          'Fn::Join': [
+            ':',
+            [
+              'arn:aws:sqs',
+              { Ref: 'AWS::Region' },
+              { Ref: 'AWS::AccountId' },
+              'catalog-items-queue',
+            ],
+          ],
+        },
       }
     ]
   },
@@ -39,6 +71,23 @@ const serverlessConfiguration: AWS = {
     importFileParser
   },
   package: { individually: true },
+  resources: {
+    Resources: {
+      GatewayResponse: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'"
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          } 
+        }
+      }
+    }
+  },
   custom: {
     esbuild: {
       bundle: true,
